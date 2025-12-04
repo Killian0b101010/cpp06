@@ -1,27 +1,32 @@
-NAME = main 
-SRC = main.cpp 
+
+NAME = main
+
+SRC = ScalarType.cpp \
+      main.cpp
+
 OBJ = $(SRC:.cpp=.o)
 DEP = $(SRC:.cpp=.d)
-FLAGS = -Wall -Wextra -Werror -std=c++98 -g3 -MMD -MP 
+
+FLAGS = -Wall -Wextra -Werror -std=c++98 -g3 -MMD -MP
 CC = c++
 RM = rm -rf
 
-all : $(NAME)
+all: $(NAME)
 
 $(NAME): $(OBJ)
-		$(CC) $(FLAGS) $(OBJ) -o ($NAME) 
+	$(CC) $(FLAGS) $(OBJ) -o $(NAME)
 
-main.o : main.cpp 
-	$(CC) $(FLAGS) -o $@ -c $<  
+%.o: %.cpp
+	$(CC) $(FLAGS) -c $< -o $@
 
-clean : 
+clean:
 	$(RM) $(OBJ) $(DEP)
 
-fclean : 
-	$(RM) $(OBJ) $(NAME)
+fclean: clean
+	$(RM) $(NAME)
 
- re : fclean all 
+re: fclean all
 
-.PHONY : fclean clean 
+.PHONY: clean fclean re
 
--include $DEP	
+-include $(DEP)
