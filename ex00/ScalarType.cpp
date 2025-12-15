@@ -6,13 +6,18 @@
 /*   By: kiteixei <kiteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/02 18:02:46 by kiteixei          #+#    #+#             */
-/*   Updated: 2025/12/04 14:18:35 by kiteixei         ###   ########.fr       */
+/*   Updated: 2025/12/15 22:32:06 by kiteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ScalarType.hpp"
 #include <cctype>
-
+#include <string>
+#include <limits.h>
+#include <cfloat>
+#include <cmath>
+#include <iostream>
+#include <iomanip>
 ScalarType::ScalarType() {
   std::cout << "ScalarType Constructor called" << std::endl;
 }
@@ -21,11 +26,11 @@ ScalarType::~ScalarType() {
   std::cout << "ScalarType destructtor called" << std::endl;
 }
 
-ScalarType::Type ScalarType::getType(const std::string &str) {
-  if (str.size() == 3 && str[0] == '\'' && str[2] == '\'' &&
-      std::isprint(str[1]))
+ScalarType::Type ScalarType::getType(const std::string &str) 
+{
+  if (std::isprint(str[0]) && str.length() == 1 && !std::isdigit(str[0]))
     return IS_CHAR;
-
+    
   if (str == "nanf" || str == "+inff" || str == "-inff")
     return IS_FLOAT;
 
@@ -43,14 +48,16 @@ ScalarType::Type ScalarType::getType(const std::string &str) {
     if (isInt)
       return IS_INT;
   }
-
-  if (str.back() == 'f') {
+   
+  size_t last_f = str.length() - 1;
+  if (str[last_f] == 'f') {
     size_t dot = str.find('.');
     if (dot != std::string::npos) {
       bool ok = true;
       for (size_t i = 0; i < str.size() - 1; i++) {
         if (i == dot)
           continue;
+
         if (i == 0 && (str[0] == '+' || str[0] == '-'))
           continue;
         if (!std::isdigit(str[i])) {
@@ -65,7 +72,8 @@ ScalarType::Type ScalarType::getType(const std::string &str) {
 
   {
     size_t dot = str.find('.');
-    if (dot != std::string::npos && str.back() != 'f') {
+    size_t last = str.length();
+    if (dot != std::string::npos && str[last] != 'f') {
       bool ok = true;
       for (size_t i = 0; i < str.size(); i++) {
         if (i == dot)
@@ -87,6 +95,7 @@ ScalarType::Type ScalarType::getType(const std::string &str) {
 void ScalarType::convertType(const std::string &str, Type t) {
   char c = 0;
   int i = 0;
+  bool isZero = false;
   float f = 0;
   double d = 0;
   int _inff_moin = 0;
@@ -97,7 +106,7 @@ void ScalarType::convertType(const std::string &str, Type t) {
   errno = 0;
 
   if (t == IS_CHAR) {
-    c = str[1];
+    c = str[0];
     i = static_cast<int>(c);
     f = static_cast<float>(c);
     d = static_cast<double>(c);
@@ -134,11 +143,15 @@ void ScalarType::convertType(const std::string &str, Type t) {
     } else {
       char *end;
       f = std::strtof(str.c_str(), &end);
-
       if (*end != 'f' || errno == ERANGE) {
         intImpossible = true;
         charImpossible = true;
       }
+      size_t last_f = str.length() - 1;
+      if(str[last_f - 1 ] ==  '0')
+        isZero = true;
+      if (str[last_f - 1] != '0')
+        charImpossible = true;
       d = static_cast<double>(f);
       i = static_cast<int>(f);
       c = static_cast<char>(i);
@@ -148,7 +161,11 @@ void ScalarType::convertType(const std::string &str, Type t) {
     }
   }
 
-  else if (t == IS_DOUBLE) {
+  else if (t == IS_DOUBLE) 
+  {
+    size_t last_f = str.length();
+    if(str[last_f - 1 ] > '0')
+      charImpossible = true;
     if (str == "nan" || str == "+inf" || str == "-inf") {
       d = std::strtod(str.c_str(), NULL);
       f = static_cast<float>(d);
@@ -179,7 +196,7 @@ void ScalarType::convertType(const std::string &str, Type t) {
   }
 
   std::cout << "char: ";
-  if (charImpossible)
+  if (charImpossible == true)
     std::cout << "impossible\n";
   else if (!charDisplay)
     std::cout << "Non displayable\n";
@@ -203,6 +220,8 @@ void ScalarType::convertType(const std::string &str, Type t) {
     std::cout << "+inff" << std::endl;
   else if (std::isinf(f))
     std::cout << (f > 0 ? "+inff\n" : "-inff\n");
+  else if(isZero)
+    std::cout << f << ".0f\n";
   else
     std::cout << f << "f\n";
 
@@ -215,6 +234,8 @@ void ScalarType::convertType(const std::string &str, Type t) {
     std::cout << "+inf" << std::endl;
   else if (std::isinf(d))
     std::cout << (d > 0 ? "+inf\n" : "-inf\n");
+   else if(isZero)
+    std::cout << d << ".0\n";
   else
     std::cout << d << "\n";
 }
