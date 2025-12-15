@@ -89,11 +89,11 @@ void ScalarType::convertType(const std::string &str, Type t) {
   int i = 0;
   float f = 0;
   double d = 0;
-
+  int _inff_moin = 0;
+  int _inff_plus = 0;
   bool charImpossible = false;
   bool charDisplay = true;
   bool intImpossible = false;
-
   errno = 0;
 
   if (t == IS_CHAR) {
@@ -106,6 +106,11 @@ void ScalarType::convertType(const std::string &str, Type t) {
   else if (t == IS_INT) {
     char *end;
     long tmp = std::strtol(str.c_str(), &end, 10);
+
+    if (tmp < 0 && errno == ERANGE)
+      _inff_moin = true;
+    if (tmp > 0 && errno == ERANGE)
+      _inff_plus = true;
     if (tmp > INT_MAX || tmp < INT_MIN)
       intImpossible = true;
     if (*end != '\0' || errno == ERANGE)
@@ -113,10 +118,9 @@ void ScalarType::convertType(const std::string &str, Type t) {
     else
       i = static_cast<int>(tmp);
 
-    c = static_cast<char>(i);
-    f = static_cast<float>(i);
-    d = static_cast<double>(i);
-
+    c = static_cast<char>(tmp);
+    f = static_cast<float>(tmp);
+    d = static_cast<double>(tmp);
     if (!std::isprint(c))
       charDisplay = false;
   }
@@ -135,7 +139,6 @@ void ScalarType::convertType(const std::string &str, Type t) {
         intImpossible = true;
         charImpossible = true;
       }
-
       d = static_cast<double>(f);
       i = static_cast<int>(f);
       c = static_cast<char>(i);
@@ -159,11 +162,9 @@ void ScalarType::convertType(const std::string &str, Type t) {
         intImpossible = true;
         charImpossible = true;
       }
-
       f = static_cast<float>(d);
       i = static_cast<int>(d);
       c = static_cast<char>(i);
-
       if (!std::isprint(c))
         charDisplay = false;
     }
@@ -182,6 +183,8 @@ void ScalarType::convertType(const std::string &str, Type t) {
     std::cout << "impossible\n";
   else if (!charDisplay)
     std::cout << "Non displayable\n";
+  else if(intImpossible)
+    std::cout << "Non displayable\n";
   else
     std::cout << "'" << c << "'\n";
 
@@ -194,6 +197,10 @@ void ScalarType::convertType(const std::string &str, Type t) {
   std::cout << "float: ";
   if (std::isnan(f))
     std::cout << "nanf\n";
+  else if(_inff_moin)
+    std::cout << "-inff" << std::endl;
+  else if(_inff_plus)
+    std::cout << "+inff" << std::endl;
   else if (std::isinf(f))
     std::cout << (f > 0 ? "+inff\n" : "-inff\n");
   else
@@ -202,6 +209,10 @@ void ScalarType::convertType(const std::string &str, Type t) {
   std::cout << "double: ";
   if (std::isnan(d))
     std::cout << "nan\n";
+  else if(_inff_moin)
+    std::cout << "-inf" << std::endl;
+  else if(_inff_plus)
+    std::cout << "+inf" << std::endl;
   else if (std::isinf(d))
     std::cout << (d > 0 ? "+inf\n" : "-inf\n");
   else
