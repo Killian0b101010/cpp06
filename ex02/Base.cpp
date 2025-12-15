@@ -6,17 +6,17 @@
 /*   By: kiteixei <kiteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/07 17:51:34 by kiteixei          #+#    #+#             */
-/*   Updated: 2025/12/08 10:06:48 by kiteixei         ###   ########.fr       */
+/*   Updated: 2025/12/15 23:37:36 by kiteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "Base.hpp"
 
+#include "Base.hpp"
 Base::Base() {};
 
 Base::~Base() {};
 
 Base *Base::generate(void) {
-  std::srand(std::time(NULL));
+  std::srand(time(NULL));
   int r = std::rand() % 3;
 
   if (r == 0)

@@ -1,5 +1,5 @@
 
-NAME = main
+NAME = convert
 
 SRC = ScalarType.cpp \
       main.cpp

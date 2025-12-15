@@ -6,7 +6,7 @@
 /*   By: kiteixei <kiteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/07 17:54:21 by kiteixei          #+#    #+#             */
-/*   Updated: 2025/12/08 10:02:56 by kiteixei         ###   ########.fr       */
+/*   Updated: 2025/12/15 23:21:33 by kiteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #define BASE_HPP
 #include <exception>
 #include <iostream>
+#include <cstdlib>
 class Base {
 public:
   Base();

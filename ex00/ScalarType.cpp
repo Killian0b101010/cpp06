@@ -6,7 +6,7 @@
 /*   By: kiteixei <kiteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/02 18:02:46 by kiteixei          #+#    #+#             */
-/*   Updated: 2025/12/15 22:32:06 by kiteixei         ###   ########.fr       */
+/*   Updated: 2025/12/15 23:45:24 by kiteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,9 @@
 #include <cmath>
 #include <iostream>
 #include <iomanip>
-ScalarType::ScalarType() {
+
+ScalarType::ScalarType() 
+{
   std::cout << "ScalarType Constructor called" << std::endl;
 }
 
@@ -92,7 +94,8 @@ ScalarType::Type ScalarType::getType(const std::string &str)
   return UNKNOW;
 }
 
-void ScalarType::convertType(const std::string &str, Type t) {
+void ScalarType::convertType(const std::string &str, Type t) 
+{
   char c = 0;
   int i = 0;
   bool isZero = false;

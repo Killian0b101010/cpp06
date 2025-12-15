@@ -1,8 +1,7 @@
 #ifndef Serializer_HPP
 #define Serializer_HPP
-#include <cstdint>
 #include <iostream>
-
+#include <stdint.h>
 typedef struct Data 
 {
  std::string _name;
